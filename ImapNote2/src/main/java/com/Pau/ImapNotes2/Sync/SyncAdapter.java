@@ -137,13 +137,10 @@ else am.setUserData(account, "syncinterval", "15");
         // handle notes created or removed on remote
         boolean remoteNotesManaged = false;
         String usesticky = am.getUserData(account, "usesticky");
+
     try {
         remoteNotesManaged = SyncUtils.handleRemoteNotes(context, res.notesFolder, storedNotes, account.name, usesticky);
-    } catch (MessagingException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-    } catch (IOException e) {
-        // TODO Auto-generated catch block
+        } catch (MessagingException | IOException e) {
         e.printStackTrace();
     }
         if (remoteNotesManaged) isChanged = true;
@@ -209,10 +206,7 @@ else am.setUserData(account, "syncinterval", "15");
             
             try {
                 uids = SyncUtils.sendMessageToRemote(msg);
-            } catch (MessagingException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (IOException e) {
+            } catch (MessagingException | IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }

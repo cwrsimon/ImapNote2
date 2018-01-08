@@ -29,4 +29,5 @@ dependencies {
     compile files('libs/commons-io-2.4.jar')
     compile files('libs/javamaildir-0.6.jar')
     compile files('libs/mail.jar')
+    compile 'jp.wasabeef:richeditor-android:1.2.2'
 }

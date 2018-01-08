@@ -169,12 +169,16 @@ public class UpdateThread extends AsyncTask<Object, Void, Boolean>{
       UUID uuid = UUID.randomUUID();
       message.setHeader("X-Universally-Unique-Identifier", uuid.toString());
       body = noteBody;
+        /*
       body = body.replaceFirst("<p dir=ltr>", "<div>");
       body = body.replaceFirst("<p dir=\"ltr\">", "<div>");
       body = body.replaceAll("<p dir=ltr>", "<div><br></div><div>");
       body = body.replaceAll("<p dir=\"ltr\">", "<div><br></div><div>");
       body = body.replaceAll("</p>", "</div>");
       body = body.replaceAll("<br>\n", "</div><div>");
+      */
+       // message.setContent(body, "text/html; charset=utf-8");
+
       message.setText(body, "utf-8", "html");
       message.setFlag(Flags.Flag.SEEN,true);
     }

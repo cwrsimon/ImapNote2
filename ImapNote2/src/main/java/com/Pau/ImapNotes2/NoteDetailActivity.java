@@ -32,7 +32,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.EditText;
+
+import jp.wasabeef.richeditor.RichEditor;
 
 public class NoteDetailActivity extends Activity {
     
@@ -71,10 +72,68 @@ public class NoteDetailActivity extends Activity {
            stringres = sticky.GetText();
            position = sticky.GetPosition();
            color = sticky.GetColor();
-           Spanned plainText = Html.fromHtml(stringres);
-           ((EditText)findViewById(R.id.bodyView)).setText(plainText);
-            this.ResetColors();
+        // TODO
+        // https://github.com/commonsguy/cwac-richedit
+        Spanned plainText = null; // Html.fromHtml(stringres);
+
+        // String cleanedString = stringres.replaceAll("<br>", "<br/>");
+        /*
+            final Document document = Jsoup.parse(stringres);
+            document.outputSettings().syntax(Document.OutputSettings.Syntax.xml).escapeMode(Entities.EscapeMode.xhtml);
+            String cleanedString = document.html();
+            Log.i(TAG, cleanedString);
+         */
+        final RichEditor richEditor = (RichEditor) findViewById(R.id.bodyView);
+        richEditor.setHtml(stringres);
+        this.ResetColors();
             //invalidateOptionsMenu();
+
+        findViewById(R.id.action_bold).setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) {
+                richEditor.setBold();
+            }
+        });
+        findViewById(R.id.action_italic).setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) {
+                richEditor.setItalic();
+            }
+        });
+        findViewById(R.id.action_subscript).setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) {
+                richEditor.setSubscript();
+            }
+        });
+        findViewById(R.id.action_superscript).setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) {
+                richEditor.setSuperscript();
+            }
+        });
+        findViewById(R.id.action_strikethrough).setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) {
+                richEditor.setStrikeThrough();
+            }
+        });
+        findViewById(R.id.action_underline).setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) {
+                richEditor.setUnderline();
+            }
+        });
+        findViewById(R.id.action_insert_bullets).setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) {
+                richEditor.setBullets();
+            }
+        });
+        findViewById(R.id.action_insert_checkbox).setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) {
+                richEditor.insertTodo();
+            }
+        });
+        findViewById(R.id.action_insert_checkbox).setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                return false;
+            }
+        });
     }
     
     public void onClick(View v){
@@ -82,8 +141,10 @@ public class NoteDetailActivity extends Activity {
     }
     
     private void ResetColors(){
-        ((EditText)findViewById(R.id.bodyView)).setBackgroundColor(Color.TRANSPARENT);
-        ((EditText)findViewById(R.id.bodyView)).setTextColor(Color.BLACK);
+        ((RichEditor) findViewById(R.id.bodyView)).setBackgroundColor(Color.TRANSPARENT);
+        ((RichEditor) findViewById(R.id.bodyView)).setTextColor(Color.BLACK);
+        ((RichEditor) findViewById(R.id.bodyView)).setEditorFontSize(18);
+
         Colors currentColor = Colors.valueOf(color);
         switch (currentColor) {
           case BLUE:
@@ -144,7 +205,7 @@ public class NoteDetailActivity extends Activity {
             //Log.d(TAG,"We ask to modify Message #"+this.currentNote.get("number"));
             intent.putExtra("EDIT_ITEM_NUM_IMAP",suid);
             intent.putExtra("EDIT_ITEM_TXT",
-            Html.toHtml(((EditText)findViewById(R.id.bodyView)).getText()));
+                        ((RichEditor) findViewById(R.id.bodyView)).getHtml());
             if (!this.usesticky.equals("true")) {
                 this.color="NONE";
             }
@@ -241,7 +302,9 @@ Log.d(TAG,"+++ isMimeType multipart/* (contentType):"+message.getContentType());
 Object content = message.getContent();
          Multipart mp = (Multipart) content;
          int count = mp.getCount();
-         for (int i = 0; i < count; i++) GetPart(mp.getBodyPart(i));
+            for (int i = 0; i < count; i++) {
+                GetPart(mp.getBodyPart(i));
+            }
 } else if (message.isMimeType("message/rfc822")) {
 Log.d(TAG,"+++ isMimeType message/rfc822/* (contentType):"+message.getContentType());
 GetPart((Part) message.getContent());
@@ -255,19 +318,22 @@ Log.d(TAG,"+++ isMimeType image/jpeg (contentType):"+message.getContentType());
       Log.d(TAG,"+++ instanceof String");
   } else if (o instanceof InputStream) {
       Log.d(TAG,"+++ instanceof InputStream");
-  } else Log.d(TAG,"+++ instanceof ???");
+            } else {
+                Log.d(TAG, "+++ instanceof ???");
+            }
 }
     }
 
     private Sticky ReadHtmlnote(String stringres) {
 //        Log.d(TAG,"From server (html):"+stringres);
-        Spanned spanres = Html.fromHtml(stringres);
+        /*Spanned spanres = Html.fromHtml(stringres);
         stringres = Html.toHtml(spanres);
         stringres = stringres.replaceFirst("<p dir=ltr>", "");
         stringres = stringres.replaceFirst("<p dir=\"ltr\">", "");
         stringres = stringres.replaceAll("<p dir=ltr>", "<br>");
         stringres = stringres.replaceAll("<p dir=\"ltr\">", "<br>");
         stringres = stringres.replaceAll("</p>", "");
+         */
 
         return new Sticky(stringres, "", "NONE");
     }
